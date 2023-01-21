@@ -116,7 +116,6 @@ for (let i = 0; i < voteSize; i += 1) {
 for (let i = 0; i < arrSize; i += 1) {
   console.log(`\n${candidate[i].name}`);
   for (let j = 0; j < voteSize; j += 1) {
-    // console.log('Precinct ' + i + ' -- ' candidate[i].votes[j] + ' -- ' + candidate[i].votes[j] / precinctVotes[j]);
     const votePercentage = (candidate[i].votes[j] / precinctVotes[j]) * 100;
     console.log(
       `\tPrecinct ${i + 1} -- ${candidate[i].votes[j]} -- ${Number(votePercentage).toFixed(2)}%`
@@ -134,3 +133,33 @@ for (let i = 0; i < arrSize; i += 1) {
 }
 
 // part 4
+let winner: string = 'none';
+const runOff1: Array<number> = [];
+const runOff2: Array<number> = [];
+for (let i = 0; i < arrSize; i += 1) {
+  let totalVotes = 0;
+  for (let j = 0; j < voteSize; j += 1) {
+    totalVotes += candidate[i].votes[j];
+  }
+  const totalPercentage = (totalVotes / overallVotes) * 100;
+  if (totalPercentage > 50) {
+    winner = candidate[i].name;
+  } else if (i == 0) {
+    runOff1.push(i, totalPercentage);
+  } else if (i == 1) {
+    runOff2.push(i, totalPercentage);
+  } else if (totalPercentage > runOff1[1]) {
+    runOff1[0] = i;
+    runOff1[1] = totalPercentage;
+  } else if (totalPercentage > runOff2[1]) {
+    runOff2[0] = i;
+    runOff2[1] = totalPercentage;
+  }
+}
+if (winner != 'none') {
+  console.log(`\nWinner is ${winner}`);
+} else {
+  console.log(
+    `\nThe run off will be with ${candidate[runOff1[0]].name} and ${candidate[runOff2[0]].name}`
+  );
+}
